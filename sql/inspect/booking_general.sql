@@ -1,0 +1,13 @@
+SELECT MIN(DISTINCT [Date]) as EarliestDate,
+MAX(DISTINCT [Date]) as LATESTDATE, count(*)
+FROM 
+[STAGE_1_DB].[BOOKING_SCH_S1].[BOOKING_TB_S1]
+
+
+SELECT MIN(DISTINCT [Date]) as EarliestDate,
+MAX(DISTINCT [Date]) as LATESTDATE, count(*)
+FROM 
+[STAGE_2_DB].[BOOKING_SCH_S2].[BOOKING_TB_S2]
+
+
+
