@@ -27,6 +27,7 @@ AND
 ORDER BY   
     [Status]
 
+
 -- ==================================================
 -- Waste report 
 With clean_waste_type_tb as (
@@ -38,7 +39,10 @@ Select
 FROM
     [STAGE_2_DB].[BOOKING_SCH_2].[BOOKING_TB_2] 
 WHERE 
-    [DATE] BETWEEN '20210801' and '20210831' 
+    [DATE] BETWEEN 
+        '20210701' 
+        and 
+        '20210731' 
 AND 
     [Customer_Number] IN (
 1345, 1346, 1347, 1547, 1683, 3291, 3293, 3294,
@@ -49,8 +53,6 @@ AND
 4393,4340,4341,1870)
 AND 
     [STATUS] = 'C'
-
-
 ), SourceTable as (
     SELECT 
     [Customer_Number],
@@ -60,17 +62,11 @@ AND
 FROM 
     clean_waste_type_tb
 WHERE [Clean_Waste_Type] IN 
-    ('General', 'Cardboard', 'Comingle')
-)Select [Customer_Number], [Address_1], [General], [Cardboard], [Comingle]  from SourceTable PIVOT (
-    SUM([Total_volume]) FOR [Clean_Waste_Type] IN ([General], [Cardboard], [Comingle])
+    ('General', 'Cardboard', 'Comingle', 'Organics')
+)Select [Customer_Number], [Address_1], [General], [Cardboard], [Comingle], [Organics]  from SourceTable PIVOT (
+    SUM([Total_volume]) FOR [Clean_Waste_Type] IN ([General], [Cardboard], [Comingle], [Organics])
 ) AS pvt 
 ORDER BY [Customer_Number];
-
-
-
-
-
-
 -- ==================================================
 
 

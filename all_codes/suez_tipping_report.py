@@ -31,7 +31,9 @@ def read_all_files(path : str):
 
     try:
         df_objs = pd.read_excel(path, sheet_name=None, skiprows=9)
+
         all_sheets_name = list(df_objs.keys())
+
         [cleanning_report_format(df_objs[sheet_name]) for sheet_name in all_sheets_name]
 
     except:
@@ -44,6 +46,7 @@ for filename in os.listdir(PATH):
     if filename.endswith(".xlsx"):
 
         path_1 = f"{PATH}/{filename}"
+        
         read_all_files(path_1)
 
 
