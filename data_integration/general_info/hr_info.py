@@ -1,59 +1,40 @@
-import pandas as pd
-import numpy as np
 import pyodbc
+import pandas as pd
+# insert data from csv file into dataframe.
+# working directory for csv file: type "pwd" in Azure Data Studio or Linux
+# working directory in Windows c:\users\username
+
+df = pd.read_csv("C:\\Users\\User\\Desktop\\blob_storage\\EmployeeID.csv")
+
+# Some other example server values are
+# server = 'localhost\sqlexpress' # for a named instance
+# server = 'myserver,port' # to specify an alternate port
+
+# fill Nan
+# ============================================= 
+df = df.fillna(value="null")
+# ============================================= 
+
+server = 'localhost' 
+database = 'CONST_INFO'
+
+username = 'SA' 
+password = 'Sydwaste123#'
+
+cnxn = pyodbc.connect('DRIVER={SQL Server};SERVER='+server+';DATABASE='+database+';UID='+username+';PWD='+ password)
+cursor = cnxn.cursor()
+# Insert Dataframe into SQL Server:
+
+for index, row in df.iterrows():
+    cursor.execute("INSERT INTO CONST_INFO.EMPLOYEE_INFO.EMPLOYEE_ID \
+    (Full_name,EmployeeID,Last_name, First_name, Middle_name, Note) \
+    values(?,?,?,?,?,?)", row.Name, row.EmployeeID, row.lastname, row.firstname, row.middlename, row.Note)          
+cnxn.commit()
+cursor.close()
 
 
-def clean_df(PATH):
-    print(PATH)
-    df = pd.read_csv(PATH, dtype={
-      "Job No" : np.float64,
-      "Schd Time End" : str, 
-      "Schd Time Start": str, 
-      "Customer Name" : str,
-      "Site Name" : str,
-      "Address 1" : str,
-      "Address 1" : str,
-      "City" : str,
-      "State" : str,
-      "Zone" : str,
-      "Phone" : str,
-      "Serv Type" : str,   
-      "Container Type" : str,
-      "Status" : str,
-      "Truck number" : str,
-      "Route number" : str,
-      "Initial Entry Date" : str,
-      "Prorated Weight" : float,
-      "Booking Reference 1" : str,
-     "Booking Reference 2" : str,
-      "Alternate Ref No 1" : str,
-     "Alternate Ref No 2" : str,
-     "Alternate Service Ref 1" : str,
-     "Alternate Service Ref 2" : str,
-     "Directions" : str,
-     "Waste Type" : str,
-     "Price" : float,
-      "PO": str, 
-      "Notes": str, 
-      "Tip Site": str})
 
-    df = df.fillna(value=0)
-    # df.Date = pd.to_datetime(df.Date, format="%Y-%m-%d")
-    df.Date = pd.to_datetime(df.Date, format="%d/%m/%y")
 
-    df['Customer number'] = df['Customer number'].round(3)
-    df['Schd Time End'] = df['Schd Time Start'].astype(str)
-    df['Schd Time End'] = df['Schd Time End'].astype(str)
-    df["Branch"] = df["Branch"].astype(str)
-    
-    df["PostCode"] = df["PostCode"].astype(int)
-    df.Notes = df.Notes.astype(str)
-    df.Directions = df.Directions.astype(str)
-    return df
-
-PATH = "C:\\Users\\User\\Desktop\\blob_storage\\booking\\sep2021.csv"
-
-df = clean_df(PATH)
 
 server = 'localhost' 
 database = 'STAGE_1_DB'
@@ -64,6 +45,8 @@ password = 'Sydwaste123#'
 cnxn = pyodbc.connect('DRIVER={SQL Server};SERVER='+server+';DATABASE='+database+';UID='+username+';PWD='+ password)
 
 cursor = cnxn.cursor()
+# Insert Dataframe into SQL Server:
+# 38
 
 for index, row in df.iterrows():
     cursor.execute("INSERT INTO STAGE_1_DB.BOOKING_SCH_1.BOOKING_TB_1 \

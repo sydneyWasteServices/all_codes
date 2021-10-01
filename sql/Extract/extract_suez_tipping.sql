@@ -1,11 +1,12 @@
 SELECT MIN(DISTINCT [Date]) as EarliestDate,
 MAX(DISTINCT [Date]) as LATESTDATE, count(*)
-FROM [STAGE_1_DB].[SUEZ_TIPPING_SCH_1].[SUEZ_TIPPING_TB_1]
+FROM [STAGE_1_DB].[SUEZ_TIPPING_SCH_S1].[SUEZ_TIPPING_TB_S1]
+
 
 
 SELECT MIN(DISTINCT [Date]) as EarliestDate,
 MAX(DISTINCT [Date]) as LATESTDATE, count(*)
-FROM [STAGE_2_DB].[SUEZ_TIPPING_SCH_2].[SUEZ_TIPPING_TB_2]
+FROM [STAGE_2_DB].[SUEZ_TIPPING_SCH_S2].[SUEZ_TIPPING_TB_S2]
 
 
 --  TRUNCATE TABLE SUEZ_TIPPING_SCH_S2
@@ -16,48 +17,33 @@ TRUNCATE TABLE [STAGE_2_DB].[SUEZ_TIPPING_SCH_S2].[SUEZ_TIPPING_TB_S2]
 
 -- inspect duplicate DOCKET
 SELECT [DATE], [DOCKET], count([DOCKET])
-FROM [STAGE_1_DB].[SUEZ_TIPPING_SCH_1].[SUEZ_TIPPING_TB_1]
+FROM [STAGE_1_DB].[SUEZ_TIPPING_SCH_S1].[SUEZ_TIPPING_TB_S1]
 GROUP BY [DATE], [DOCKET]
 HAVING count([DOCKET]) > 1 
 order by [DATE] desc
 
 
-TRUNCATE TABLE [STAGE_2_DB].[SUEZ_TIPPING_SCH_2].[SUEZ_TIPPING_TB_2]
-
-SELECT * FROM [STAGE_1_DB].[SUEZ_TIPPING_SCH_1].[SUEZ_TIPPING_TB_1]
-
-SELECT 
-    [Date],
-    [First_Weigh],
-    [Docket],
-    [Rego],
-    [Net_t],
-    [Price_per_unit],
-    [Net_t] * [Price_per_unit] AS [total_price]
-FROM 
-    [STAGE_1_DB].[SUEZ_TIPPING_SCH_1].[SUEZ_TIPPING_TB_1]
-WHERE 
-    -- [DATE] = '20210714'
-    [DATE] BETWEEN '20210901' AND '20210929'
-
+TRUNCATE TABLE [STAGE_2_DB].[SUEZ_TIPPING_SCH_S2].[SUEZ_TIPPING_TB_S2]
 
 
 SELECT 
     [Date],
-    [First_Weigh],
+    [1st Weigh],
     [Docket],
     [Rego],
-    [Net_t],
-    [Price_per_unit],
-    [Net_t] * [Price_per_unit] AS [total_price]
+    [Net (t)],
+    [Price per unit],
+    [Net (t)] * [Price per unit] AS [total_price]
 FROM 
-    [STAGE_2_DB].[SUEZ_TIPPING_SCH_2].[SUEZ_TIPPING_TB_2]
+    [STAGE_1_DB].[SUEZ_TIPPING_SCH_S1].[SUEZ_TIPPING_TB_S1]
 WHERE 
     -- [DATE] = '20210714'
-    [DATE] BETWEEN '20210901' AND '20210929'
+    [DATE] BETWEEN '20210812' AND '20210825'
 
 
 
+-- 30 - 6 
+-- 7 - 13
 
 
 -- ===================================================

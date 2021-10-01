@@ -9,10 +9,13 @@ def cleanning_report_format(df : object):
 
         # If the Rego is Nan Then it will select until that point
         df = df[~df.Rego.isnull()]
+
+
         # Convert 3 Date Column to string
         # split the excess part  
         df = df.astype({'Date':str,'1st Weigh':str,'2nd Weigh':str})
-        df['Date'] = df['Date'].str.split(' ', 1, expand=True) 
+
+        df['Date'] = df['Date'].str.split(' ', 1, expand=True)
         df['1st Weigh'] = df['1st Weigh'].str.split('.', 1, expand=True) 
         df['2nd Weigh'] = df['2nd Weigh'].str.split('.', 1, expand=True) 
 
@@ -38,6 +41,7 @@ def read_all_files(path : str):
 
     except:
         print(path)
+
 
 PATH = "/media/sf_BLOB_STORAGE/suez_Veolia_Ton_Report/og_suez_reports"
 
