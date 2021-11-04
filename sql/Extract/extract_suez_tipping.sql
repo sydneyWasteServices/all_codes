@@ -1,12 +1,15 @@
 SELECT MIN(DISTINCT [Date]) as EarliestDate,
-MAX(DISTINCT [Date]) as LATESTDATE, count(*)
-FROM [STAGE_1_DB].[SUEZ_TIPPING_SCH_S1].[SUEZ_TIPPING_TB_S1]
-
+MAX(DISTINCT [Date]) as LATESTDATE, 
+count(*)
+FROM [STAGE].[SUEZ_TIPPING_SCH_1].[SUEZ_TIPPING_TB_1]
 
 
 SELECT MIN(DISTINCT [Date]) as EarliestDate,
-MAX(DISTINCT [Date]) as LATESTDATE, count(*)
-FROM [STAGE_2_DB].[SUEZ_TIPPING_SCH_S2].[SUEZ_TIPPING_TB_S2]
+MAX(DISTINCT [Date]) as LATESTDATE, 
+count(*)
+FROM [STAGE].[SUEZ_TIPPING_SCH_2].[SUEZ_TIPPING_TB_2]
+
+
 
 
 --  TRUNCATE TABLE SUEZ_TIPPING_SCH_S2
@@ -17,173 +20,64 @@ TRUNCATE TABLE [STAGE_2_DB].[SUEZ_TIPPING_SCH_S2].[SUEZ_TIPPING_TB_S2]
 
 -- inspect duplicate DOCKET
 SELECT [DATE], [DOCKET], count([DOCKET])
-FROM [STAGE_1_DB].[SUEZ_TIPPING_SCH_S1].[SUEZ_TIPPING_TB_S1]
+FROM [STAGE].[SUEZ_TIPPING_SCH_2].[SUEZ_TIPPING_TB_2]
 GROUP BY [DATE], [DOCKET]
 HAVING count([DOCKET]) > 1 
 order by [DATE] desc
 
 
+
+SELECT [DATE], [Job_No], count([Job_No])
+FROM [STAGE].[BOOKING_SCH_2].[BOOKING_TB_2]
+GROUP BY [DATE], [Job_No]
+HAVING count([Job_No]) > 1 
+order by [DATE] desc
+
+
+SELECT * FROM [STAGE].[SUEZ_TIPPING_SCH_1].[SUEZ_TIPPING_TB_1]
+
 TRUNCATE TABLE [STAGE_2_DB].[SUEZ_TIPPING_SCH_S2].[SUEZ_TIPPING_TB_S2]
 
-
+-- ================================================================================
 SELECT 
     [Date],
-    [1st Weigh],
+    [First_Weigh],
     [Docket],
     [Rego],
-    [Net (t)],
-    [Price per unit],
-    [Net (t)] * [Price per unit] AS [total_price]
+    [Net_t],
+    [Price_per_unit],
+    [Net_t] * [Price_per_unit] AS [total_price]
 FROM 
-    [STAGE_1_DB].[SUEZ_TIPPING_SCH_S1].[SUEZ_TIPPING_TB_S1]
-WHERE 
-    -- [DATE] = '20210714'
-    [DATE] BETWEEN '20210812' AND '20210825'
-
-
-
--- 30 - 6 
--- 7 - 13
-
-
--- ===================================================
--- Insert new non duplicate records to stage 2 table  
-
-WITH Distinct_Doc AS
-(
-    SELECT * ,
-        ROW_NUMBER() OVER(
-            PARTITION BY [Docket] ORDER BY [Docket]) AS 'RowNum' 
-
-    FROM 
-        [STAGE_1_DB].[SUEZ_TIPPING_SCH_S1].[SUEZ_TIPPING_TB_S1]
-    -- WHERE 
-    --     [DATE] BETWEEN '20210812' AND '20210825'
-    -- WHERE [Date] = '20210609'
-
-    
-)
-SELECT * INTO #TmpTable
-FROM Distinct_Doc
-WHERE RowNum = 1
-
-ALTER TABLE #TmpTable
-DROP COLUMN RowNum;
-
-INSERT INTO  
-    [STAGE_2_DB].[SUEZ_TIPPING_SCH_S2].[SUEZ_TIPPING_TB_S2]
-SELECT *
-FROM #TmpTable
-
-DROP TABLE #TmpTable
-
-
-
-Select * from  #TmpTable
-WHERE [DATE] = '20210424'
-ORDER BY [DOCKET]
-
-
--- SELECT * from 
--- [STAGE_2_DB].[SUEZ_TIPPING_SCH_S2].[SUEZ_TIPPING_TB_S2]
--- WHERE [Date] BETWEEN '20210414' AND '20210420'
--- ORDER BY [Date]
-
--- ===============================================
--- Extract with Date
-
-SELECT 
-    [Date],
-    [1st Weigh],
-    [Docket],
-    [Rego],
-    [Net (t)],
-    [Price per unit],
-    [Net (t)] * [Price per unit] AS [total_price]
-FROM 
-     [STAGE_2_DB].[SUEZ_TIPPING_SCH_S2].[SUEZ_TIPPING_TB_S2]
-WHERE 
-    [DATE] BETWEEN '20210818' AND '20210824'
+    [STAGE].[SUEZ_TIPPING_SCH_2].[SUEZ_TIPPING_TB_2]
+WHERE [DATE] BETWEEN '20211020' AND '20211026'     
 ORDER BY 
-    [DATE]
-
-
-
-
--- ===========================================
--- Data Audit 
-SELECT 
     [DATE],
-    -- count([DATE]) as occurence
-    count(*)
-    -- *
+    [REGO]
+-- ================================================================================
+
+
+
+-- Check Tonnage 
+SELECT 
+    SUM([Net_t])
 FROM
-    [STAGE_2_DB].[SUEZ_TIPPING_SCH_S2].[SUEZ_TIPPING_TB_S2]
-WHERE [DATE] BETWEEN '20210818' AND '20210824'
-GROUP BY [DATE]
-ORDER BY [DATE]
+[STAGE].[SUEZ_TIPPING_SCH_2].[SUEZ_TIPPING_TB_2]
+WHERE [DATE] BETWEEN '20210811' AND '20210817'     
 
-
--- Calculate Weight
--- =====================
-SELECT 
-    sum([Net (t)])
-FROM 
-     [STAGE_2_DB].[SUEZ_TIPPING_SCH_S2].[SUEZ_TIPPING_TB_S2]
-
-WHERE [DATE] BETWEEN '20210818' AND '20210824'
-
-
-
-SELECT *
-from 
-     [STAGE_2_DB].[SUEZ_TIPPING_SCH_S2].[SUEZ_TIPPING_TB_S2]
-WHERE 
-    [DATE] BETWEEN '20210602' AND '20210608'
-
-
-     
-DELETE 
-FROM 
-[STAGE_2_DB].[SUEZ_TIPPING_SCH_S2].[SUEZ_TIPPING_TB_S2]
-WHERE 
-[DATE] = '20210609'
-
-
-
-SELECT 
-    count(*) as Num_Row,
-    avg([Net (t)]) as Average_ton
-    -- *
-FROM 
-     [STAGE_2_DB].[SUEZ_TIPPING_SCH_S2].[SUEZ_TIPPING_TB_S2]
-
-    -- [DATE] BETWEEN '20210609' AND '20210615'
-
-WHERE [DATE] BETWEEN '20210818' AND '20210824'
-
-    -- [DATE] = '20210609'
-
-    -- [DATE] BETWEEN '20210609' AND '20210615'
-
-
+-- Check average daily ton 
 SELECT 
     [date],
     count(*) as Num_Row,
-    avg([Net (t)]) as Average_ton
--- *
+    avg([Net_t]) as Average_ton
 FROM 
-    [STAGE_2_DB].[SUEZ_TIPPING_SCH_S2].[SUEZ_TIPPING_TB_S2]
-WHERE 
-    -- [DATE] BETWEEN '20210609' AND '20210615'
-
-    [DATE] BETWEEN '20210731' AND '20210801'
-
+    [STAGE].[SUEZ_TIPPING_SCH_2].[SUEZ_TIPPING_TB_2]
+WHERE  [DATE] BETWEEN '20210811' AND '20210817'     
 GROUP by 
-    [DATE]
+    [DATE];
 
 
 
 
-SELECT * FROM [STAGE_2_DB].[SUEZ_TIPPING_SCH_S2].[SUEZ_TIPPING_TB_S2]
-ORDER BY [DATE] 
+
+
+

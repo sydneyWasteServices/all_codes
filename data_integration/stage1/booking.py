@@ -51,12 +51,12 @@ def clean_df(PATH):
     df.Directions = df.Directions.astype(str)
     return df
 
-PATH = "C:\\Users\\User\\Desktop\\blob_storage\\booking\\sep2021.csv"
+PATH = "C:\\Users\\User\\Desktop\\blob_storage\\booking\\staging_sept_oct\\Sept2021.csv"
 
 df = clean_df(PATH)
 
 server = 'localhost' 
-database = 'STAGE_1_DB'
+database = 'STAGE'
 
 username = 'SA' 
 password = 'Sydwaste123#'
@@ -66,7 +66,8 @@ cnxn = pyodbc.connect('DRIVER={SQL Server};SERVER='+server+';DATABASE='+database
 cursor = cnxn.cursor()
 
 for index, row in df.iterrows():
-    cursor.execute("INSERT INTO STAGE_1_DB.BOOKING_SCH_1.BOOKING_TB_1 \
+    print(index)
+    cursor.execute("INSERT INTO STAGE.BOOKING_SCH_1.BOOKING_TB_1 \
     (Job_No,Date,Schd_Time_Start,Schd_Time_End,Lat,Lng,\
     Customer_Number,Customer_Name,Site_Name,Address_1,\
     Address_2,City,State,PostCode,Zone,Phone,Qty_Scheduled,\
