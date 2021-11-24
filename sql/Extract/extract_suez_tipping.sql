@@ -49,7 +49,9 @@ SELECT
     [Net_t] * [Price_per_unit] AS [total_price]
 FROM 
     [STAGE].[SUEZ_TIPPING_SCH_2].[SUEZ_TIPPING_TB_2]
-WHERE [DATE] BETWEEN '20211020' AND '20211026'     
+WHERE [DATE] BETWEEN '20211006' AND '20211012' 
+AND 
+    [REGO] in ('XN76VB', 'CQ64LO')    
 ORDER BY 
     [DATE],
     [REGO]

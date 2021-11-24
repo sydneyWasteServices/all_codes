@@ -305,8 +305,6 @@ USE
     INFO
 GO
 
-CREATE SCHEMA LINKT_TOLL_INFO 
-
 
 CREATE TABLE [INFO].[LINKT_TOLL_INFO].[TAGID](
     ID int IDENTITY(1,1),
@@ -314,4 +312,47 @@ CREATE TABLE [INFO].[LINKT_TOLL_INFO].[TAGID](
     tag_class VARCHAR(100),   
     state VARCHAR(100),
     number_plate VARCHAR(100)
+)
+
+
+CREATE SCHEMA LINKT_TOLL_INFO 
+
+USE 
+STAGE 
+go
+
+CREATE SCHEMA [AMPOL_FUEL_SCH_1]
+
+CREATE SCHEMA [AMPOL_FUEL_SCH_2]
+
+
+CREATE TABLE [STAGE].[AMPOL_FUEL_SCH_1].[AMPOL_FUEL_TB_1](
+    ID int IDENTITY(1,1),
+    Account int,
+    Card_Number bigint ,
+    Driver_Name VARCHAR(800),
+    Trans_Type VARCHAR(500), 
+    Location int,
+    Trans_Ref int,
+    Trans_Date date,
+    Post_Date date,
+    Amount money,
+    Amount_Ex_GST money, 
+    Location_Name VARCHAR(MAX)
+)
+
+
+CREATE TABLE [STAGE].[AMPOL_FUEL_SCH_2].[AMPOL_FUEL_TB_2](
+    ID int IDENTITY(1,1),
+    Account int,
+    Card_Number bigint ,
+    Driver_Name VARCHAR(800),
+    Trans_Type VARCHAR(500), 
+    Location int,
+    Trans_Ref int,
+    Trans_Date date,
+    Post_Date date,
+    Amount money,
+    Amount_Ex_GST money, 
+    Location_Name VARCHAR(MAX)
 )

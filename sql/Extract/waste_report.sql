@@ -102,9 +102,9 @@ FROM
     [STAGE].[BOOKING_SCH_2].[BOOKING_TB_2]
 WHERE 
     [DATE] BETWEEN
-        '20211001' 
+        '20210901' 
         and 
-        '20211031'
+        '20210930'
     AND
     [Customer_Number] IN (
 1345, 1346, 1347, 1547, 1683, 1870, 3291, 3293, 3294,
@@ -115,6 +115,8 @@ WHERE
 4393, 4340, 4341)
     AND
 [Serv_Type] = 'COL'
+ORDER BY
+[Customer_Number]
 
 
 

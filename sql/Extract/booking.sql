@@ -75,9 +75,11 @@ FROM
 WHERE 
     [Date] 
 BETWEEN 
-    '20211020' AND '20211026'
+    '20211013' AND '20211019'
     AND
-    [Status] = 'C'
+    [Status] NOT IN ('V','N','F')
+    AND 
+    [Serv_Type] = 'COL'
 ORDER BY 
     [DATE],
     [Job_No]
@@ -124,15 +126,60 @@ FROM user_tables;
 
 -- ========================
 Select
-    *,
-    [Price] / 11 *10 as excl_gst_price
+    -- *,
+    -- [Price] / 11 *10 as excl_gst_price
+    count(*)
 From
     [STAGE].[BOOKING_SCH_2].[BOOKING_TB_2]
 CROSS APPLY
      string_split([Route_Number], '-')
 where
-    [Date] between '20211020' AND '20211026'
+    [Date] between '20211013' AND '20211019'
     AND
     [Status] NOT IN ('V','N','F')
+    AND
+    [Serv_Type] = 'COL'
 ORDER BY 
     [Date] 
+
+
+
+
+-- ================================================
+-- Extract Booking data
+-- ================================================
+
+
+with
+    currwk_booking_data
+    as
+    (
+        SELECT
+            * ,
+            PARSENAME(REPLACE([Route_Number], '-','.'),2) as Route_number,
+            [Price] / 11 *10 as excl_gst_price
+        -- SUM([Price])
+        FROM
+            [STAGE].[BOOKING_SCH_2].[BOOKING_TB_2]
+        WHERE 
+    [Date] 
+BETWEEN '20211013' AND '20211019'
+            AND [Status] = 'C'
+    --     ORDER BY 
+    -- [DATE],
+    -- [Job_No]
+    )
+Select 
+    -- sum(excl_gst_price)
+    TOP 3 *
+from 
+    currwk_booking_data
+where
+    [Route_number] = 'BR1'
+    AND
+    [Status] NOT IN ('V','N','F')
+    AND
+    [Serv_Type] = 'COL'
+
+
+order by [Date]

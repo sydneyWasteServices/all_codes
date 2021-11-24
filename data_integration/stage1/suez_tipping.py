@@ -59,3 +59,9 @@ for index, row in df.iterrows():
 cnxn.commit()
 cursor.close()
 cnxn.close()
+
+
+
+
+
+# 2. Maybe Sammy

@@ -19,7 +19,7 @@ With
             [STAGE].[ROUTE_SUMMARY_SCH_2].[ROUTE_SUMMARY_TB_2]
         WHERE
  [RouteDate] 
-BETWEEN '20211006' AND '20211012'
+BETWEEN '20211013' AND '20211019'
     )
 Select
     Route_number,
